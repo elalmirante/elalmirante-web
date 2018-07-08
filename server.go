@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"text/template"
 
@@ -36,7 +35,20 @@ func createMux() *http.ServeMux {
 
 	// deploy handler
 	mux.Handle("/deploy", validateConfig(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "DEPLOY")
+
+		servers, _ := config.GetServersFromConfigFile(configFile)
+		q := r.PostFormValue("q")
+		ref := r.PostFormValue("ref")
+
+		// If Get, dont show servers
+		if r.Method == http.MethodGet {
+			servers = nil
+		} else {
+			servers = query.ExecSorted(servers, q)
+		}
+
+		serverResults := deployServers(servers, ref)
+		renderDeploy(w, serverResults, q, ref)
 	})))
 
 	// index
@@ -45,6 +57,27 @@ func createMux() *http.ServeMux {
 	})))
 
 	return mux
+}
+
+func renderDeploy(w http.ResponseWriter, serverResults []serverResult, q, ref string) {
+	tmpl, err := template.New("query").ParseFiles("views/layout.html.tmpl", "views/deploy.html.tmpl")
+
+	if err != nil {
+		renderError(w, err)
+		return
+	}
+
+	data := struct {
+		Q       string
+		Ref     string
+		Results []serverResult
+	}{
+		Q:       q,
+		Ref:     ref,
+		Results: serverResults,
+	}
+
+	tmpl.ExecuteTemplate(w, "layout", &data)
 }
 
 func renderQuery(w http.ResponseWriter, servers []models.Server, q string) {

@@ -12,6 +12,10 @@ web interface for elalmirante.
 
 ![Query](/screenshots/query.jpg?raw=true "Query")
 
+![Deploy](/screenshots/deploy.jpg?raw=true "Deploy")
+
+![DeployError](/screenshots/deployerr.jpg?raw=true "DeployError")
+
 Aditionally, the application will tell you when theres something wrong with your config file:
 
 ![Error](/screenshots/error.jpg?raw=true "Error")

@@ -10,6 +10,12 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/assets/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="/assets/js/popper.min.js"></script>
+    <script src="/assets/js/bootstrap.min.js"></script>
+
     <title>elalmirante</title>
   </head>
   
@@ -31,20 +37,9 @@
           </li>
         </ul>
       </div>
-    </nav>    
+    </nav>
 
-    <div class="content container">
-      <br />
-      {{template "content" .}}
-    </div>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="/assets/js/jquery-3.3.1.slim.min.js"></script>
-    <script src="/assets/js/popper.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-
-    <!-- set active class for nav -->
+    <!-- Set active class for nav -->
     <script type="text/javascript">
       $(document).ready(function () {
         var path = window.location.pathname;
@@ -55,6 +50,12 @@
         }).parent().addClass('active')
       });
     </script> 
+
+    <!-- Render Content -->
+    <div class="content container">
+      <br />
+      {{template "content" .}}
+    </div>
   </body>
 </html>
 
