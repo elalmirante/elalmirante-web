@@ -25,6 +25,6 @@ func main() {
 
 	// server
 	mux := createMux()
-	log.Println("Starting server...")
+	log.Printf("Starting server... listening on http://0.0.0.0:%s \n", *port)
 	log.Fatal(http.ListenAndServe(":"+*port, middleware.Lowercase(mux)))
 }
