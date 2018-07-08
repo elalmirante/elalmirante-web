@@ -60,7 +60,7 @@ func renderQuery(w http.ResponseWriter, servers []models.Server, q string) {
 		Servers []models.Server
 	}{
 		Q:       q,
-		Servers: query.Exec(servers, q),
+		Servers: query.ExecSorted(servers, q),
 	}
 
 	tmpl.ExecuteTemplate(w, "layout", &data)
