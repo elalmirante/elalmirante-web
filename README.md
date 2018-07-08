@@ -21,3 +21,8 @@ Aditionally, the application will tell you when theres something wrong with your
 ![Error](/screenshots/error.jpg?raw=true "Error")
 
 This check happens on each request.
+
+
+### go-bindata recompile:
+
+`go-bindata assets/... views/...`

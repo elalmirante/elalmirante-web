@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/elalmirante/elalmirante/config"
@@ -9,11 +11,39 @@ import (
 	"github.com/elalmirante/elalmirante/query"
 )
 
+var mimeTypes = map[string]string{
+	"css": "text/css",
+	"js":  "application/javascript",
+}
+
+var layoutView, _ = Asset("views/layout.html.tmpl")
+var errorView, _ = Asset("views/error.html.tmpl")
+var deployView, _ = Asset("views/deploy.html.tmpl")
+var queryView, _ = Asset("views/query.html.tmpl")
+
+// string views, from go-bindata
+var deployViewStr = string(layoutView) + string(deployView)
+var queryViewStr = string(layoutView) + string(queryView)
+var errorViewStr = string(layoutView) + string(errorView)
+
 func createMux() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	// assets handler
-	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("assets"))))
+	// server assets from go-bindata
+	mux.Handle("/assets/",
+		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			request := strings.TrimPrefix(r.URL.Path, "/")
+			file, err := Asset(request)
+
+			if err != nil {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+
+			ext := filepath.Ext(request)
+			w.Header().Set("Content-Type", mimeTypes[ext])
+			w.Write(file)
+		}))
 
 	// serve config file
 	mux.HandleFunc("/config", func(w http.ResponseWriter, r *http.Request) {
@@ -59,8 +89,9 @@ func createMux() *http.ServeMux {
 	return mux
 }
 
+// helper render functions
 func renderDeploy(w http.ResponseWriter, serverResults []serverResult, q, ref string) {
-	tmpl, err := template.New("query").ParseFiles("views/layout.html.tmpl", "views/deploy.html.tmpl")
+	tmpl, err := template.New("query").Parse(deployViewStr)
 
 	if err != nil {
 		renderError(w, err)
@@ -81,7 +112,7 @@ func renderDeploy(w http.ResponseWriter, serverResults []serverResult, q, ref st
 }
 
 func renderQuery(w http.ResponseWriter, servers []models.Server, q string) {
-	tmpl, err := template.New("query").ParseFiles("views/layout.html.tmpl", "views/query.html.tmpl")
+	tmpl, err := template.New("query").Parse(queryViewStr)
 
 	if err != nil {
 		renderError(w, err)
@@ -100,7 +131,7 @@ func renderQuery(w http.ResponseWriter, servers []models.Server, q string) {
 }
 
 func renderError(w http.ResponseWriter, msg error) {
-	tmpl, err := template.New("error").ParseFiles("views/layout.html.tmpl", "views/error.html.tmpl")
+	tmpl, err := template.New("error").Parse(errorViewStr)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
