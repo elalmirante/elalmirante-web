@@ -14,7 +14,7 @@ web interface for elalmirante.
 
 ![Deploy](/screenshots/deploy.jpg?raw=true "Deploy")
 
-![DeployError](/screenshots/deployerr.jpg?raw=true "DeployError")
+![DeployError](/screenshots/deployerror.jpg?raw=true "DeployError")
 
 Aditionally, the application will tell you when theres something wrong with your config file:
 
