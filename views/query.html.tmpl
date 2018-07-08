@@ -1,0 +1,34 @@
+{{define "content"}}
+  
+  <form>
+    <div class="row">
+      <div class="col">
+        <input type="text" class="form-control mb-2 mr-sm-2" placeholder="query" name="q" value="{{.Q}}">
+      </div>
+      <div class="col col-sm-4">
+        <button type="submit" class="btn btn-primary mb-2">Query</button>
+      </div>
+    </div>
+  </form>
+  
+  <div class="row">
+    {{range .Servers}}
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">{{.Name}}</h5>
+          <h6 class="card-subtitle mb-2 text-muted">{{.Provider}}</h6>
+
+          <p class="card-text">Tags:</p>
+          <ul>
+            {{range .Tags}}
+              <li>
+                {{.}}
+              </li>
+            {{end}}
+          </ul>
+        </div>
+      </div>
+    {{end}}
+  </div>
+
+{{end}}
